@@ -83,7 +83,7 @@ func handleMaven() {
 		var err error
 		filename, err = lib.GetDefaultMavenConfPath()
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal("error while reading home dir: ", err)
 		}
 		fmt.Printf("No output specified. File will be written to %s\n", filename)
 	} else {
@@ -97,7 +97,7 @@ func handleMaven() {
 
 	bytes, err := lib.ReplaceMavenTemplate(template, user, password)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("error while reading template: ", err)
 	}
 	err = lib.WriteToFile(bytes, filename)
 	if err != nil {
