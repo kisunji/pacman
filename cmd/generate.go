@@ -70,7 +70,7 @@ func runGenerate(cmd *cobra.Command, args []string) {
 		handleMaven()
 	case "mvn":
 		handleMaven()
-	default: // default should not be reached in ValidArgs is enforced
+	default: // default should not be reached since ValidArgs is enforced
 		log.Fatal("invalid argument")
 	}
 }
