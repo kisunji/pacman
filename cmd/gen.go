@@ -23,7 +23,7 @@ var (
 var generateCmd = &cobra.Command{
 	Use:     "generate {maven|nuget|npm}",
 	Aliases: []string{"gen", "g"},
-	Short:   "Generate file",
+	Short:   "Generate file (aliases: gen, g)",
 	Long: `Generates a config file from templates found in templates.
 If --output or -o is not provided, the file will be saved in the package manager's
 conventional directory. If file exists, --overwrite flag is required to overwrite it.`,
