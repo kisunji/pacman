@@ -14,6 +14,7 @@ var rootCmd = &cobra.Command{
 	Long: `Pacman is a CLI tool to generate configuration files from templates
 for package managers in enterprise environments that have an internal repo 
 or corporate proxies`,
+	Version: "0.9.1-beta",
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
