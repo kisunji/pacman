@@ -1,7 +1,6 @@
 package lib
 
 import (
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -18,18 +17,6 @@ func ReplaceMavenTemplate(filename, username, password string) ([]byte, error) {
 	newContent := strings.ReplaceAll(string(content), "PACMAN_USER", username)
 	newContent = strings.ReplaceAll(string(newContent), "PACMAN_PASS", password)
 	return []byte(newContent), nil
-}
-
-// WriteMavenTemplate writes bytes to filename
-func WriteMavenTemplate(bytes []byte, filename string) error {
-	if err := os.MkdirAll(filepath.Dir(filename), os.ModePerm); err != nil {
-		return err
-	}
-	if err := ioutil.WriteFile(filename, bytes, 0600); err != nil {
-		return err
-	}
-	fmt.Printf("File successfully written at: %s", filename)
-	return nil
 }
 
 // GetDefaultMavenConfPath returns the absolute path of where

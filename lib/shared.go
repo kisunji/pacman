@@ -1,6 +1,11 @@
 package lib
 
-import "os"
+import (
+	"fmt"
+	"io/ioutil"
+	"os"
+	"path/filepath"
+)
 
 // FileExists returns true if file exists BUT there may be cases
 // where file exists but no read permissions lead to error
@@ -13,4 +18,16 @@ func FileExists(filename string) bool {
 	} else {
 		return false
 	}
+}
+
+// WriteToFile creates parent directories if they do not exist
+func WriteToFile(bytes []byte, filename string) error {
+	if err := os.MkdirAll(filepath.Dir(filename), os.ModePerm); err != nil {
+		return err
+	}
+	if err := ioutil.WriteFile(filename, bytes, 0600); err != nil {
+		return err
+	}
+	fmt.Printf("File successfully written to: %s", filename)
+	return nil
 }

@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"syscall"
 
 	"github.com/kisunji/pacman/lib"
 	"github.com/spf13/cobra"
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 var (
@@ -22,7 +24,9 @@ var generateCmd = &cobra.Command{
 	Use:     "generate {maven|nuget|npm}",
 	Aliases: []string{"gen", "g"},
 	Short:   "Generate file",
-	Long:    `Generates a config file from templates found in templates.`,
+	Long: `Generates a config file from templates found in templates.
+If --output or -o is not provided, the file will be saved in the package manager's
+conventional directory. If file exists, --overwrite flag is required to overwrite it.`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) < 1 {
 			return errors.New("requires an argument")
@@ -38,13 +42,28 @@ var generateCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(generateCmd)
-	generateCmd.Flags().StringVarP(&user, "user", "u", "", "Username")
-	generateCmd.Flags().StringVarP(&password, "pass", "p", "", "Password")
-	generateCmd.Flags().StringVarP(&output, "output", "o", "", "Output filename")
+	generateCmd.Flags().StringVarP(&user, "user", "u", "", "Username. Will prompt for input if not provided.")
+	generateCmd.Flags().StringVarP(&password, "pass", "p", "", "Password. Will prompt for input if not provided.")
+	generateCmd.Flags().StringVarP(&output, "output", "o", "", "Output filename.")
 	generateCmd.Flags().BoolVar(&overwrite, "overwrite", false, "Overwrite existing file (if exists)")
 }
 
 func runGenerate(cmd *cobra.Command, args []string) {
+	// Prompt username if not provided
+	fmt.Print("User: ")
+	var input string
+	fmt.Scanln(&input)
+	user = input
+
+	// Prompt password if not provided
+	fmt.Print("Password: ")
+	bytePw, err := terminal.ReadPassword(int(syscall.Stdin))
+	if err != nil {
+		log.Fatal(err)
+	}
+	password = string(bytePw)
+	fmt.Println()
+
 	// Index 0 Guaranteed by Args validation
 	switch args[0] {
 	case "maven":
@@ -80,8 +99,8 @@ func handleMaven() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = lib.WriteMavenTemplate(bytes, filename)
+	err = lib.WriteToFile(bytes, filename)
 	if err != nil {
-		log.Fatal("error while writing", err)
+		log.Fatal("error while writing: ", err)
 	}
 }
